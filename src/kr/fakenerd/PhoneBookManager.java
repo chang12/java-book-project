@@ -19,7 +19,7 @@ class PhoneBookManager {
 
     private PhoneBookManager() {}
 
-    int showMenu() {
+    int showMenu() throws MenuChoiceException {
         System.out.println("선택하세요...");
         System.out.println("1. 데이터 입력");
         System.out.println("2. 데이터 검색");
@@ -28,15 +28,21 @@ class PhoneBookManager {
         System.out.print("선택: ");
         int menu = keyboard.nextInt();
         keyboard.nextLine(); // 1 혹은 2를 입력한 뒤 누른 Enter 키는 nextInt로 흡수되지 않는다. 이를 버리는 역할.
+        if (menu < MENU.INSERT || menu > MENU.EXIT) {
+            throw new MenuChoiceException(menu);
+        }
         return menu;
     }
 
-    void insertPhoneInfo() {
+    void insertPhoneInfo() throws MenuChoiceException {
         System.out.println("데이터 입력을 시작합니다..");
         System.out.println("1. 일반, 2. 대학, 3. 회사");
         System.out.print("선택>> ");
         int type = keyboard.nextInt();
         keyboard.nextLine();
+        if (type < INSERT_MENU.NORMAL || type > INSERT_MENU.COMPANY) {
+            throw new MenuChoiceException(type);
+        }
         System.out.print("이름 : ");
         String name = keyboard.nextLine();
         System.out.print("전화번호 : ");
