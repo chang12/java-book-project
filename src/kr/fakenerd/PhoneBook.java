@@ -25,14 +25,28 @@ public class PhoneBook {
 
     private static void insertPhoneInfo() {
         System.out.println("데이터 입력을 시작합니다..");
+        System.out.println("1. 일반, 2. 대학, 3. 회사");
+        System.out.print("선택>> ");
+        int type = keyboard.nextInt();
+        keyboard.nextLine();
         System.out.print("이름 : ");
         String name = keyboard.nextLine();
         System.out.print("전화번호 : ");
         String phoneNumber = keyboard.nextLine();
-        System.out.print("생년월일 : ");
-        String birth = keyboard.nextLine();
-        System.out.println("");
-        phoneInfoArray[phoneInfoNum++] = new PhoneInfo(name, phoneNumber, birth);
+        if (type == 1) {
+            phoneInfoArray[phoneInfoNum++] = new PhoneInfo(name, phoneNumber);
+        } else if (type == 2) {
+            System.out.print("전공 : ");
+            String major = keyboard.nextLine();
+            System.out.print("학년 : ");
+            int year = keyboard.nextInt();
+            keyboard.nextLine();
+            phoneInfoArray[phoneInfoNum++] = new PhoneUnivInfo(name, phoneNumber, major, year);
+        } else if (type == 3) {
+            System.out.print("회사 : ");
+            String company = keyboard.nextLine();
+            phoneInfoArray[phoneInfoNum++] = new PhoneCompanyInfo(name, phoneNumber, company);
+        }
         System.out.println("데이터 입력이 완료되었습니다.");
         System.out.println("");
     }
