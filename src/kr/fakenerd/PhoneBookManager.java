@@ -1,5 +1,7 @@
 package kr.fakenerd;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 
 class PhoneBookManager {
@@ -13,8 +15,7 @@ class PhoneBookManager {
     }
 
     private final int SIZE = 100;
-    private PhoneInfo[] phoneInfos = new PhoneInfo[SIZE];
-    private int phoneInfoNum = 0;
+    private HashSet<PhoneInfo> phoneInfos = new HashSet<>(SIZE);
     private Scanner keyboard = new Scanner(System.in);
 
     private PhoneBookManager() {}
@@ -43,25 +44,30 @@ class PhoneBookManager {
         if (type < INSERT_MENU.NORMAL || type > INSERT_MENU.COMPANY) {
             throw new MenuChoiceException(type);
         }
+        PhoneInfo info = null;
         System.out.print("이름 : ");
         String name = keyboard.nextLine();
         System.out.print("전화번호 : ");
         String phoneNumber = keyboard.nextLine();
         if (type == INSERT_MENU.NORMAL) {
-            phoneInfos[phoneInfoNum++] = new PhoneInfo(name, phoneNumber);
+            info = new PhoneInfo(name, phoneNumber);
         } else if (type == INSERT_MENU.UNIV) {
             System.out.print("전공 : ");
             String major = keyboard.nextLine();
             System.out.print("학년 : ");
             int year = keyboard.nextInt();
             keyboard.nextLine();
-            phoneInfos[phoneInfoNum++] = new PhoneUnivInfo(name, phoneNumber, major, year);
+            info = new PhoneUnivInfo(name, phoneNumber, major, year);
         } else if (type == INSERT_MENU.COMPANY) {
             System.out.print("회사 : ");
             String company = keyboard.nextLine();
-            phoneInfos[phoneInfoNum++] = new PhoneCompanyInfo(name, phoneNumber, company);
+            info = new PhoneCompanyInfo(name, phoneNumber, company);
         }
-        System.out.println("데이터 입력이 완료되었습니다.");
+        if (!phoneInfos.add(info)) {
+            System.out.println("이미 저장된 데이터입니다.");
+        } else {
+            System.out.println("데이터 입력이 완료되었습니다.");
+        }
         System.out.println("");
     }
 
@@ -69,13 +75,16 @@ class PhoneBookManager {
         System.out.println("데이터 검색을 시작합니다..");
         System.out.print("이름 : ");
         String name = keyboard.nextLine();
-        for (int idx = 0; idx < phoneInfoNum; idx++) {
-            if (name.equals(phoneInfos[idx].getName())) {
-                phoneInfos[idx].showPhoneInfo();
-                break;
+
+        for (PhoneInfo info : phoneInfos) {
+            if (name.equals(info.getName())) {
+                info.showPhoneInfo();
+                System.out.println("데이터 검색이 완료되었습니다.");
+                System.out.println("");
+                return;
             }
         }
-        System.out.println("데이터 검색이 완료되었습니다.");
+        System.out.println("존재하지 않는 이름입니다.");
         System.out.println("");
     }
 
@@ -83,21 +92,17 @@ class PhoneBookManager {
         System.out.println("데이터 삭제를 시작합니다..");
         System.out.print("이름 : ");
         String name = keyboard.nextLine();
-        int idx;
-        for (idx = 0; idx < phoneInfoNum; idx++) {
-            if (name.equals(phoneInfos[idx].getName())) {
-                break;
+
+        Iterator<PhoneInfo> iter = phoneInfos.iterator();
+        while (iter.hasNext()) {
+            if (name.equals(iter.next().getName())) {
+                iter.remove();
+                System.out.println("데이터 삭제가 완료되었습니다.");
+                System.out.println("");
+                return;
             }
         }
-        if (idx == phoneInfoNum) {
-            // 존재하지 않는 데이터의 삭제 요청이므로 작업할게 없다.
-            return;
-        }
-        phoneInfoNum--;
-        for (int i = idx; i < phoneInfoNum; i++) {
-            phoneInfos[i] = phoneInfos[i + 1];
-        }
-        System.out.println("데이터 삭제가 완료되었습니다.");
+        System.out.println("존재하지 않는 이름입니다.");
         System.out.println("");
     }
 }

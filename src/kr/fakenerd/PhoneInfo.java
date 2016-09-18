@@ -21,4 +21,15 @@ class PhoneInfo {
     String getName() {
         return name;
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        PhoneInfo comp = (PhoneInfo)obj;
+        return name.equals(comp.getName());
+    }
 }
